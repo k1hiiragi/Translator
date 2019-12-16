@@ -1,27 +1,53 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import Translate from "@google-cloud/translate";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+        // 選択範囲の取得
+        const editor = vscode.window.activeTextEditor;
+        if (editor === undefined) {
+            return;
+        }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "translator" is now active!');
+        const document = editor.document;
+        const selection = editor.selection;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
+        const text = document.getText(selection);
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
-	});
+        // 翻訳
+        TranslateText(text);
 
-	context.subscriptions.push(disposable);
+        // Display a message box to the user
+        vscode.window.showInformationMessage('Hello World!');
+    });
+
+    context.subscriptions.push(disposable);
+}
+
+async function TranslateText(text: string) {
+    const translationClient = new Translate.v3.TranslationServiceClient();
+
+    const request = {
+        parent: translationClient.locationPath("hoge", "global"),
+        contents: [text],
+        mimeType: "text/plain",
+        sourceLanguageCode: "en-US",
+        targetLanguageCode: "ja-JP"
+    };
+
+    const [response] = await translationClient.translateText(request);
+
+    if (!response.translations) {
+        return;
+    }
+
+    for (const translation of response.translations) {
+        if (!(typeof translation.translatedText === 'string')) {
+            return;
+        }
+        vscode.window.showInformationMessage(translation.translatedText);
+    }
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
