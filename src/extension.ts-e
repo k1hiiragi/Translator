@@ -25,14 +25,20 @@ async function TranslateText(text: string) {
     const translationClient = new Translate.v3.TranslationServiceClient();
 
     const credential = await translationClient.auth.getCredentials();
+    const project_id = process.env.PROJECTID;
 
     if (credential) {
         vscode.window.showInformationMessage('Credentialがないです');
         return;
     }
 
+    if (project_id === undefined) {
+        vscode.window.showInformationMessage('Project_IDがないです');
+        return;
+    }
+
     const request = {
-        parent: translationClient.locationPath("hoge", "global"),
+        parent: translationClient.locationPath(project_id, "global"),
         contents: [text],
         mimeType: "text/plain",
         sourceLanguageCode: "en-US",
