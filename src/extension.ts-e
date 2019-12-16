@@ -25,7 +25,7 @@ async function TranslateText(text: string) {
     const translationClient = new Translate.v3.TranslationServiceClient();
 
     const credential = await translationClient.auth.getCredentials();
-    const project_id = process.env.PROJECTID;
+    const project_id: string | undefined = vscode.workspace.getConfiguration('translator').get('project_id');
 
     if (!credential) {
         vscode.window.showInformationMessage('Credentialがないです');

@@ -19,7 +19,19 @@
 				"command": "extension.translator",
 				"title": "Translate"
 			}
-		]
+		],
+		"configuration": {
+			"title": "translator",
+			"properties": {
+				"translator.project_id": {
+					"type": [
+						"string"
+					],
+					"default": "",
+					"description": "利用するCloud Translation APIのプロジェクトID"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
