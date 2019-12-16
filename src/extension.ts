@@ -41,7 +41,6 @@ async function TranslateText(text: string) {
         parent: translationClient.locationPath(project_id, "global"),
         contents: [text],
         mimeType: "text/plain",
-        sourceLanguageCode: "auto",
         targetLanguageCode: "ja-JP"
     };
 
