@@ -16,9 +16,6 @@ export function activate(context: vscode.ExtensionContext) {
 
         // 翻訳
         TranslateText(text);
-
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World!');
     });
 
     context.subscriptions.push(disposable);
