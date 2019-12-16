@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import Translate from "@google-cloud/translate";
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+    let disposable = vscode.commands.registerCommand('extension.translator', () => {
         // 選択範囲の取得
         const editor = vscode.window.activeTextEditor;
         if (editor === undefined) {
@@ -23,6 +23,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function TranslateText(text: string) {
     const translationClient = new Translate.v3.TranslationServiceClient();
+
+    const credential = await translationClient.auth.getCredentials();
+
+    if (credential) {
+        vscode.window.showInformationMessage('Credentialがないです');
+        return;
+    }
 
     const request = {
         parent: translationClient.locationPath("hoge", "global"),
