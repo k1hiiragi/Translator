@@ -27,7 +27,7 @@ async function TranslateText(text: string) {
     const credential = await translationClient.auth.getCredentials();
     const project_id = process.env.PROJECTID;
 
-    if (credential) {
+    if (!credential) {
         vscode.window.showInformationMessage('Credentialがないです');
         return;
     }
