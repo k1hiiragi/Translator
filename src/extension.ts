@@ -12,6 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
         const document = editor.document;
         const selection = editor.selection;
 
+        // 選択範囲のテキストを取得
         const text = document.getText(selection);
 
         // 翻訳
@@ -24,7 +25,10 @@ export function activate(context: vscode.ExtensionContext) {
 async function TranslateText(text: string) {
     const translationClient = new Translate.v3.TranslationServiceClient();
 
+    // Credential情報が無いとAPI実行時エラーが出るためCredential情報をチェックするために取得
     const credential = await translationClient.auth.getCredentials();
+
+    // 設定からProject IDを取得
     const project_id: string | undefined = vscode.workspace.getConfiguration('translator').get('project_id');
 
     if (!credential) {
@@ -37,6 +41,8 @@ async function TranslateText(text: string) {
         return;
     }
 
+    // APIに投げるリクエスト作成
+    // sourceLanguageをせってしなければ自動判定する
     const request = {
         parent: translationClient.locationPath(project_id, "global"),
         contents: [text],
@@ -44,6 +50,7 @@ async function TranslateText(text: string) {
         targetLanguageCode: "ja-JP"
     };
 
+    // 翻訳結果取得
     const [response] = await translationClient.translateText(request);
 
     if (!response.translations) {
